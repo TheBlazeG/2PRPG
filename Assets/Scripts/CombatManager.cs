@@ -3,6 +3,7 @@ using UnityEngine;
 using Mirror;
 using System.Linq;
 using Unity.VisualScripting;
+using System.Collections;
 
 /*
 	Documentation: https://mirror-networking.gitbook.io/docs/guides/networkbehaviour
@@ -20,6 +21,9 @@ public class CombatManager : NetworkBehaviour
     public GameObject enemy;
     GameObject currentCombatant;
     [SyncVar(hook = nameof(GiveOutTurn))] public int currentTurn = 0;
+
+    public int player1SkillPower;
+    public int player2SkillPower;
 
     #endregion
 
@@ -127,7 +131,7 @@ public class CombatManager : NetworkBehaviour
     public void GiveOutTurn(int previousTurn, int turn)
     {
 
-         currentCombatant = combatants[turn];
+        currentCombatant = combatants[turn];
         if (currentCombatant.TryGetComponent<Player>(out Player player))
         {
             player.enableUI(true);
@@ -140,6 +144,17 @@ public class CombatManager : NetworkBehaviour
         {
             Debug.Log("Somethings Gone Horribly Wrong");
         }
+    }
+
+    IEnumerator StartSkill1()
+    {
+        player1SkillPower = 0;
+        player2SkillPower = 0;
+
+        yield return new WaitForSeconds(4);
+
+        int damage = Mathf.Min(player1SkillPower + player2SkillPower, 10);
+        enemy.GetComponent<Enemy>().health -= damage;
     }
 
     

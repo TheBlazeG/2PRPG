@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.InputSystem;
+using System.Numerics;
+using UnityEngine.UI;
 
 /*
 	Documentation: https://mirror-networking.gitbook.io/docs/guides/networkbehaviour
@@ -14,14 +17,14 @@ public class Player : NetworkBehaviour
     private GameObject ui;
     [SerializeField] private GameObject specialsPanel;
     [SerializeField] GameObject itemsPanel;
-    [SyncVar] public float health =15.0f;
-    [SyncVar] private float speed=1;
-    [SyncVar] private float damage=2;
-   [SerializeField] GameObject character1;
-     private bool currentTurn = false;
+    [SyncVar] public float health = 15.0f;
+    [SyncVar] private float speed = 1;
+    [SyncVar] private float damage = 2;
+    [SerializeField] GameObject character1;
+    private bool currentTurn = false;
 
     #endregion
-    
+
     #region Unity Callbacks
 
     /// <summary>
@@ -81,7 +84,7 @@ public class Player : NetworkBehaviour
     /// Called when the local player object is being stopped.
     /// <para>This happens before OnStopClient(), as it may be triggered by an ownership message from the server, or because the player object is being destroyed. This is an appropriate place to deactivate components or functionality that should only be active for the local player, such as cameras and input.</para>
     /// </summary>
-    public override void OnStopLocalPlayer() {}
+    public override void OnStopLocalPlayer() { }
 
     /// <summary>
     /// This is invoked on behaviours that have authority, based on context and <see cref="NetworkIdentity.hasAuthority">NetworkIdentity.hasAuthority</see>.
@@ -104,7 +107,7 @@ public class Player : NetworkBehaviour
             return;
 
         //set ui active true or false
-       // currentTurn = uiActive;
+        // currentTurn = uiActive;
         ui.SetActive(uiActive);
     }
 
@@ -120,14 +123,14 @@ public class Player : NetworkBehaviour
         else
         {
             CombatManager.instance.currentTurn++;
-            
+
         }
-        
+
     }
     [Command]
     public void Defend()
     {
-        
+
     }
 
     public void OpenCloseSpecialsPanel()
@@ -138,7 +141,7 @@ public class Player : NetworkBehaviour
     [Command]
     public void Special1()
     {
-        if (isLocalPlayer&& character1.activeSelf)
+        if (isLocalPlayer && character1.activeSelf)
         {
             //start character1 special1
         }
@@ -146,8 +149,8 @@ public class Player : NetworkBehaviour
         {
             //start character 2 special 1
         }
-        }
-    
+    }
+
     [Command]
     public void Special2()
     {
@@ -159,11 +162,28 @@ public class Player : NetworkBehaviour
         {
             //start character 2 special 2
         }
-          
+
     }
 
     public void Run()
     {
-        
+
+    }
+
+
+    [Command]
+    public void SkillPowerUp(InputAction.CallbackContext callbackContext)
+    {
+        if (isLocalPlayer && character1.activeSelf && callbackContext.ReadValue<float>() == -1)
+        {
+            //add power
+            CombatManager.instance.player1SkillPower++;
+        }
+        else if (isLocalPlayer && !character1.activeSelf && callbackContext.ReadValue<float>() == 1)
+        {
+            //add power for p2
+            CombatManager.instance.player2SkillPower++;
+
+        }
     }
 }
