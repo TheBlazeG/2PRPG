@@ -70,6 +70,18 @@ public class RpgLobby : NetworkRoomManager
     /// <returns>The new room-player object.</returns>
     public override GameObject OnRoomServerCreateRoomPlayer(NetworkConnectionToClient conn)
     {
+        if (roomPlayerPrefab.transform.GetChild(0).gameObject.activeSelf)
+        {
+            roomPlayerPrefab.transform.GetChild(1).gameObject.SetActive(true);
+            roomPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+
+        }
+        else
+            Debug.Log("else");
+            roomPlayerPrefab.transform.GetChild(0).gameObject.SetActive(true);
+
+
+        Debug.Log(numPlayers);
         
         return base.OnRoomServerCreateRoomPlayer(conn);
     }
@@ -83,10 +95,19 @@ public class RpgLobby : NetworkRoomManager
     /// <returns>A new GamePlayer object.</returns>
     public override GameObject OnRoomServerCreateGamePlayer(NetworkConnectionToClient conn, GameObject roomPlayer)
     {
-         
-            roomPlayer.transform.GetChild(numPlayers).gameObject.SetActive(true);
-        Debug.Log(numPlayers);
-        
+        if (roomPlayer.transform.GetChild(0).gameObject.activeSelf)
+        {
+            playerPrefab.transform.GetChild(0).gameObject.SetActive(true);
+            playerPrefab.transform.GetChild(1).gameObject.SetActive(false);
+            Debug.Log("player 1 loaded");
+        }
+        if (roomPlayer.transform.GetChild(1).gameObject.activeSelf)
+        {
+            playerPrefab.transform.GetChild(1).gameObject.SetActive(true);
+            playerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+            Debug.Log("player 2 loaded");
+            
+        }   
         return base.OnRoomServerCreateGamePlayer(conn, roomPlayer);
     }
 
@@ -128,6 +149,8 @@ public class RpgLobby : NetworkRoomManager
     /// </summary>
     public override void OnRoomServerPlayersReady()
     {
+        playerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+            playerPrefab.transform.GetChild(1).gameObject.SetActive(false);
         base.OnRoomServerPlayersReady();
     }
 

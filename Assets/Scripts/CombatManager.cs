@@ -1,27 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System.Linq;
+using Unity.VisualScripting;
 
 /*
 	Documentation: https://mirror-networking.gitbook.io/docs/guides/networkbehaviour
 	API Reference: https://mirror-networking.com/docs/api/Mirror.NetworkBehaviour.html
 */
 
-public class Player : NetworkBehaviour
+public class CombatManager : NetworkBehaviour
 {
-    #region Stats
+    public static CombatManager instance;
 
-    private GameObject ui;
-    [SerializeField] private GameObject specialsPanel;
-    [SerializeField] GameObject itemsPanel;
-    [SyncVar] public float health =15.0f;
-    [SyncVar] private float speed=1;
-    [SyncVar] private float damage=2;
-   [SerializeField] GameObject character1;
-     private bool currentTurn = false;
+    #region combat
+
+    List<GameObject> combatants;
+    List<GameObject> players;
+    public GameObject enemy;
+    GameObject currentCombatant;
+    [SyncVar(hook = nameof(GiveOutTurn))] public int currentTurn = 0;
 
     #endregion
-    
+
     #region Unity Callbacks
 
     /// <summary>
@@ -35,11 +36,23 @@ public class Player : NetworkBehaviour
     // NOTE: Do not put objects in DontDestroyOnLoad (DDOL) in Awake.  You can do that in Start instead.
     void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+            Debug.Log("GHGHGH too many combat managers deleting one");
+        }
     }
 
     void Start()
     {
-        ui = GameObject.FindGameObjectWithTag("UI");
+
+        enemy = GameObject.FindAnyObjectByType<Enemy>().gameObject;
+        combatants.Add(enemy);
+
     }
 
     #endregion
@@ -81,7 +94,7 @@ public class Player : NetworkBehaviour
     /// Called when the local player object is being stopped.
     /// <para>This happens before OnStopClient(), as it may be triggered by an ownership message from the server, or because the player object is being destroyed. This is an appropriate place to deactivate components or functionality that should only be active for the local player, such as cameras and input.</para>
     /// </summary>
-    public override void OnStopLocalPlayer() {}
+    public override void OnStopLocalPlayer() { }
 
     /// <summary>
     /// This is invoked on behaviours that have authority, based on context and <see cref="NetworkIdentity.hasAuthority">NetworkIdentity.hasAuthority</see>.
@@ -98,72 +111,36 @@ public class Player : NetworkBehaviour
 
     #endregion
 
-    public void enableUI(bool uiActive)
+    public void SetCombatOrder()
     {
-        if (!isLocalPlayer)
-            return;
+        for (int i = 0; i < combatants.Count; i++)
+        {
+            GameObject tmp = combatants[i];
+            int r = Random.Range(i, combatants.Count);
+            combatants[i] = combatants[r];
+            combatants[r] = tmp;
+        }
 
-        //set ui active true or false
-       // currentTurn = uiActive;
-        ui.SetActive(uiActive);
     }
 
-    [Command]
-    public void Attack()
+
+    public void GiveOutTurn(int previousTurn, int turn)
     {
 
-        CombatManager.instance.enemy.GetComponent<Enemy>().health -= damage;
-        if (CombatManager.instance.currentTurn >= 2)
+         currentCombatant = combatants[turn];
+        if (currentCombatant.TryGetComponent<Player>(out Player player))
         {
-            CombatManager.instance.currentTurn = 0;
+            player.enableUI(true);
+        }
+        else if (currentCombatant.TryGetComponent<Enemy>(out Enemy enemy))
+        {
+            enemy.Attack(players);
         }
         else
         {
-            CombatManager.instance.currentTurn++;
-            
+            Debug.Log("Somethings Gone Horribly Wrong");
         }
-        
-    }
-    [Command]
-    public void Defend()
-    {
-        
     }
 
-    public void OpenCloseSpecialsPanel()
-    {
-        specialsPanel.SetActive(!specialsPanel.activeSelf);
-    }
-
-    [Command]
-    public void Special1()
-    {
-        if (isLocalPlayer&& character1.activeSelf)
-        {
-            //start character1 special1
-        }
-        else if (isLocalPlayer)
-        {
-            //start character 2 special 1
-        }
-        }
     
-    [Command]
-    public void Special2()
-    {
-        if (isLocalPlayer && character1.activeSelf)
-        {
-            //start character1 special2
-        }
-        else if (isLocalPlayer)
-        {
-            //start character 2 special 2
-        }
-          
-    }
-
-    public void Run()
-    {
-        
-    }
 }

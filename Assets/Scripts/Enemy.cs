@@ -11,10 +11,10 @@ public class Enemy : NetworkBehaviour
 {
     #region Stats
 
-    [SyncVar (hook = nameof(RageBuildup))] private float health =20.0f;
+    [SyncVar (hook = nameof(RageBuildup))] public float health =20.0f;
     [SyncVar] private float speed=2;
     [SyncVar] private float damage=2;
-    [SyncVar (hook = nameof(Attack))] public bool currentTurn = false;
+    
 
     #endregion
     
@@ -104,16 +104,25 @@ public class Enemy : NetworkBehaviour
         {
        
             speed *= 2;
-                                   damage *= 1.5f;
+            damage *= 1.5f;
         }
     }
-    
+   
 
-    private void Attack(bool oldBool, bool newBool)
+    [Command]
+    public void Attack(List<GameObject> players)
     {
-        if (!newBool) 
-            return;
-        
+
+        players[Random.Range(0, players.Count)].GetComponent<Player>().health -= damage;
+        if (CombatManager.instance.currentTurn >= 2)
+        {
+            CombatManager.instance.currentTurn = 0;
+        }
+        else
+        {
+            CombatManager.instance.currentTurn++;
+            
+        }
         //random entre 2 jugadores y hacer daño
     }
 }
