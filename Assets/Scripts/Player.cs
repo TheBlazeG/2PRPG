@@ -39,6 +39,8 @@ public class Player : NetworkBehaviour
     // NOTE: Do not put objects in DontDestroyOnLoad (DDOL) in Awake.  You can do that in Start instead.
     void Awake()
     {
+        CombatManager.instance.combatants.Add(this.gameObject);
+        CombatManager.instance.players.Add(this.gameObject);
     }
 
     void Start()
@@ -68,7 +70,6 @@ public class Player : NetworkBehaviour
     public override void OnStartServer()
     {
         ui = FindFirstObjectByType<Canvas>().gameObject;
-        CombatManager.instance.combatants.Add(this.gameObject);
     }
 
     /// <summary>
@@ -81,7 +82,11 @@ public class Player : NetworkBehaviour
     /// Called on every NetworkBehaviour when it is activated on a client.
     /// <para>Objects on the host have this function called, as there is a local client on the host. The values of SyncVars on object are guaranteed to be initialized correctly with the latest state from the server when this function is called on the client.</para>
     /// </summary>
-    public override void OnStartClient() { }
+    public override void OnStartClient()
+    {
+        
+        
+    }
 
     /// <summary>
     /// This is invoked on clients when the server has caused this object to be destroyed.
@@ -125,22 +130,25 @@ public class Player : NetworkBehaviour
 
         //set ui active true or false
         // currentTurn = uiActive;
-        ui.SetActive(uiActive);
+        //ui.SetActive(uiActive);
     }
 
-    [Command]
+    [Server]
     public void Attack()
     {
-
+        if (!isServer)
+            return;
+        
         CombatManager.instance.enemy.GetComponent<Enemy>().health -= damage;
         if (CombatManager.instance.currentTurn >= 2)
         {
             CombatManager.instance.currentTurn = 0;
+            CombatManager.instance.GiveOutTurn(CombatManager.instance.currentTurn);
         }
         else
         {
             CombatManager.instance.currentTurn++;
-
+            CombatManager.instance.GiveOutTurn(CombatManager.instance.currentTurn);
         }
 
     }

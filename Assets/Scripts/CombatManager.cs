@@ -18,10 +18,10 @@ public class CombatManager : NetworkBehaviour
     #region combat
 
    public List<GameObject> combatants;
-    List<GameObject> players;
+   public List<GameObject> players;
     public GameObject enemy;
    [SerializeField] GameObject currentCombatant;
-    [SyncVar(hook = nameof(GiveOutTurn))] public int currentTurn = -1;
+    [SyncVar] public int currentTurn = 0;
 
     public int player1SkillPower;
     public int player2SkillPower;
@@ -59,8 +59,9 @@ public class CombatManager : NetworkBehaviour
 
         enemy = GameObject.FindAnyObjectByType<Enemy>().gameObject;
         combatants.Add(enemy);
+        
         SetCombatOrder();
-        nextTurn();
+        GiveOutTurn(currentTurn);
     }
 
     #endregion
@@ -134,13 +135,13 @@ public class CombatManager : NetworkBehaviour
     }
 
 
-    public void GiveOutTurn(int previousTurn, int turn)
+    public void GiveOutTurn(int turn)
     {
 
         currentCombatant = combatants[turn];
         if (currentCombatant.TryGetComponent<Player>(out Player player))
         {
-            ActivateUIForPlayer(player.gameObject.GetComponent<NetworkIdentity>().connectionToClient,player);
+            //ActivateUIForPlayer(player.gameObject.GetComponent<NetworkIdentity>().connectionToClient,player);
         }
         else if (currentCombatant.TryGetComponent<Enemy>(out Enemy enemy))
         {
@@ -150,7 +151,7 @@ public class CombatManager : NetworkBehaviour
         {
             Debug.Log("Somethings Gone Horribly Wrong");
         }
-        Debug.Log("Tried to give turn");
+        Debug.Log("Tried to give turn to "+ currentCombatant.name);
     }
 
     IEnumerator StartSkill1()
@@ -162,14 +163,15 @@ public class CombatManager : NetworkBehaviour
 
         int damage = Mathf.Min(player1SkillPower + player2SkillPower, 10);
         enemy.GetComponent<Enemy>().health -= damage;
-        nextTurn();
+nextTurn();
+
     }
 
 
     [TargetRpc] 
     void ActivateUIForPlayer(NetworkConnectionToClient target,Player player)
     {
-        player.enableUI(true);
+        //player.enableUI(true);
     }
 
    public void PlayerAttack()
@@ -189,12 +191,13 @@ public class CombatManager : NetworkBehaviour
 
     }
 
-    [Server]
+    [Command(requiresAuthority = false)]
     public void nextTurn()
     {
-        if (isLocalPlayer)
-        {
-            if (currentTurn == 4)
+        if (!isServer)
+        return;
+        
+            if (currentTurn == 3)
             {
                 currentTurn = 0;
                 SetCombatOrder();
@@ -202,7 +205,9 @@ public class CombatManager : NetworkBehaviour
             else
         currentTurn+=1;
         Debug.Log("Turn advanced");
-        }
+        
         
     }
+
+    
 }

@@ -112,20 +112,26 @@ public class Enemy : NetworkBehaviour
     }
    
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void Attack(List<GameObject> players)
     {
-
+        if (!isServer)
+            return;
+        
+        //random entre 2 jugadores y hacer daño
         players[Random.Range(0, players.Count)].GetComponent<Player>().health -= damage;
         if (CombatManager.instance.currentTurn >= 2)
         {
+            Debug.Log("turn reset");
             CombatManager.instance.currentTurn = 0;
+            CombatManager.instance.GiveOutTurn(CombatManager.instance.currentTurn);
         }
         else
         {
+            Debug.Log("enemyAttacked");
             CombatManager.instance.currentTurn++;
+            CombatManager.instance.GiveOutTurn(CombatManager.instance.currentTurn);
             
         }
-        //random entre 2 jugadores y hacer daño
     }
 }

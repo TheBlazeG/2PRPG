@@ -128,11 +128,14 @@ public class RpgLobby : NetworkRoomManager
         if (roomPlayer.transform.GetChild(0).gameObject.activeSelf && roomPlayer.transform.GetChild(0).gameObject.activeSelf)
         {
            gamePlayer.GetComponent<Player>().playerNumber = Players.Player1;
-            //Debug.Log("player 1 loaded");
+           gamePlayer.name = ("Player1");
+           //Debug.Log("player 1 loaded");
         }
         if (roomPlayer.transform.GetChild(1).gameObject.activeSelf)
         {
            gamePlayer.GetComponent<Player>().playerNumber = Players.Player2;
+           gamePlayer.name = ("Player2");
+
             //Debug.Log("player 2 loaded");
 
         }
