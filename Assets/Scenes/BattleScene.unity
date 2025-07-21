@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 60251450}
   - component: {fileID: 60251449}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: SkillButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -277,7 +277,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 60251450}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 923056327}
+        m_TargetAssemblyTypeName: CombatManager, Assembly-CSharp
+        m_MethodName: StartSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &60251450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1054,13 +1066,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.066114806, y: 0.86754787, z: -0.119964615, w: -0.47811928}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 876251814}
-  m_LocalEulerAnglesHint: {x: 0, y: -93.472, z: 0}
+  m_LocalEulerAnglesHint: {x: 15.746, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1243,7 +1255,6 @@ Transform:
   m_Children:
   - {fileID: 1420019058}
   - {fileID: 1932830930}
-  - {fileID: 756579626}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &364492128
@@ -1883,11 +1894,11 @@ Transform:
   m_GameObject: {fileID: 756579625}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.119176, y: 1.2800001, z: -3.4710789}
+  m_LocalPosition: {x: -22.58, y: 1.07, z: -18.38}
   m_LocalScale: {x: 2.8513, y: 2.8513, z: 2.8513}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 361353018}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &756579627
 MonoBehaviour:
@@ -1904,6 +1915,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  health: 20
 --- !u!114 &756579628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2179,15 +2191,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 876251813}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.9283752, y: 6.1789207, z: -3.8478975}
+  m_LocalRotation: {x: 0.068281695, y: -0.88436043, z: 0.13690245, w: 0.4410238}
+  m_LocalPosition: {x: 1.9484854, y: 3.6, z: -4.2515383}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 330585546}
   - {fileID: 1618916090}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 17.6, y: -126.99, z: -0.001}
 --- !u!1 &923056324
 GameObject:
   m_ObjectHideFlags: 0
@@ -2197,6 +2209,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 923056325}
+  - component: {fileID: 923056327}
+  - component: {fileID: 923056326}
   m_Layer: 0
   m_Name: CombatManager
   m_TagString: Untagged
@@ -2219,6 +2233,45 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &923056326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 923056324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 966425317
+  _assetId: 0
+  serverOnly: 1
+  visibility: 2
+  hasSpawned: 0
+--- !u!114 &923056327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 923056324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14697431461e65546824e74716623ff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  combatants: []
+  enemy: {fileID: 756579625}
+  currentCombatant: {fileID: 0}
+  currentTurn: -1
+  player1SkillPower: 0
+  player2SkillPower: 0
+  Prompt: {fileID: 1067905014}
 --- !u!1 &961007630
 GameObject:
   m_ObjectHideFlags: 0
@@ -2400,7 +2453,7 @@ GameObject:
   - component: {fileID: 1051879565}
   - component: {fileID: 1051879564}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: ItemButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2702,7 +2755,7 @@ GameObject:
   - component: {fileID: 1422910148}
   - component: {fileID: 1422910147}
   m_Layer: 5
-  m_Name: Button
+  m_Name: AttackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2772,7 +2825,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1422910148}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 923056327}
+        m_TargetAssemblyTypeName: CombatManager, Assembly-CSharp
+        m_MethodName: PlayerAttack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1422910148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2824,7 +2889,7 @@ GameObject:
   - component: {fileID: 1433398864}
   - component: {fileID: 1433398863}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: RunButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2947,7 +3012,7 @@ GameObject:
   - component: {fileID: 1615034265}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3066,13 +3131,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1618916089}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.066114806, y: 0.86754787, z: -0.119964615, w: -0.47811928}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 876251814}
-  m_LocalEulerAnglesHint: {x: 15.746, y: -122.28, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1618916091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3142,7 +3207,7 @@ Transform:
   m_GameObject: {fileID: 1932830929}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.86, z: 2.15}
+  m_LocalPosition: {x: 2.41, y: 2.86, z: 2.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3465,7 +3530,7 @@ GameObject:
   - component: {fileID: 2136304893}
   - component: {fileID: 2136304892}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: DefendButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3585,5 +3650,6 @@ SceneRoots:
   - {fileID: 1938101763}
   - {fileID: 961007633}
   - {fileID: 361353018}
+  - {fileID: 756579626}
   - {fileID: 195127352}
   - {fileID: 923056325}

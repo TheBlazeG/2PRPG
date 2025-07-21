@@ -142,8 +142,8 @@ MonoBehaviour:
   syncInterval: 0
   specialsPanel: {fileID: 0}
   itemsPanel: {fileID: 0}
+  health: 15
   character1: {fileID: 3448976395365782488}
-  character2: {fileID: 925343276861964127}
 --- !u!114 &6269606428047839715
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,6 +21,7 @@ public class Player : NetworkBehaviour
     [SyncVar] private float speed = 1;
     [SyncVar] private float damage = 2;
     [SerializeField] GameObject character1;
+    [SyncVar] public Players playerNumber = Players.none;
     private bool currentTurn = false;
 
     #endregion
@@ -43,6 +44,16 @@ public class Player : NetworkBehaviour
     void Start()
     {
         ui = GameObject.FindGameObjectWithTag("UI");
+        if (playerNumber == Players.Player1)
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+            transform.GetChild(1).gameObject.SetActive(false);
+        }
+        else if (playerNumber == Players.Player2)
+        {
+            transform.GetChild(1).gameObject.SetActive(true);
+            transform.GetChild(0).gameObject.SetActive(false);
+        }
     }
 
     #endregion
@@ -54,7 +65,11 @@ public class Player : NetworkBehaviour
     /// <para>This could be triggered by NetworkServer.Listen() for objects in the scene, or by NetworkServer.Spawn() for objects that are dynamically created.</para>
     /// <para>This will be called for objects on a "host" as well as for object on a dedicated server.</para>
     /// </summary>
-    public override void OnStartServer() { }
+    public override void OnStartServer()
+    {
+        ui = FindFirstObjectByType<Canvas>().gameObject;
+        CombatManager.instance.combatants.Add(this.gameObject);
+    }
 
     /// <summary>
     /// Invoked on the server when the object is unspawned
@@ -78,7 +93,9 @@ public class Player : NetworkBehaviour
     /// Called when the local player object has been set up.
     /// <para>This happens after OnStartClient(), as it is triggered by an ownership message from the server. This is an appropriate place to activate components or functionality that should only be active for the local player, such as cameras and input.</para>
     /// </summary>
-    public override void OnStartLocalPlayer() { }
+    public override void OnStartLocalPlayer() { 
+   
+    }
 
     /// <summary>
     /// Called when the local player object is being stopped.

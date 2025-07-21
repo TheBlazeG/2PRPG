@@ -4,6 +4,7 @@ using Mirror;
 using System.Linq;
 using Unity.VisualScripting;
 using System.Collections;
+using TMPro;
 
 /*
 	Documentation: https://mirror-networking.gitbook.io/docs/guides/networkbehaviour
@@ -16,14 +17,16 @@ public class CombatManager : NetworkBehaviour
 
     #region combat
 
-    List<GameObject> combatants;
+   public List<GameObject> combatants;
     List<GameObject> players;
     public GameObject enemy;
-    GameObject currentCombatant;
-    [SyncVar(hook = nameof(GiveOutTurn))] public int currentTurn = 0;
+   [SerializeField] GameObject currentCombatant;
+    [SyncVar(hook = nameof(GiveOutTurn))] public int currentTurn = -1;
 
     public int player1SkillPower;
     public int player2SkillPower;
+
+    [SerializeField]TextMeshProUGUI Prompt;
 
     #endregion
 
@@ -56,7 +59,8 @@ public class CombatManager : NetworkBehaviour
 
         enemy = GameObject.FindAnyObjectByType<Enemy>().gameObject;
         combatants.Add(enemy);
-
+        SetCombatOrder();
+        nextTurn();
     }
 
     #endregion
@@ -80,7 +84,7 @@ public class CombatManager : NetworkBehaviour
     /// Called on every NetworkBehaviour when it is activated on a client.
     /// <para>Objects on the host have this function called, as there is a local client on the host. The values of SyncVars on object are guaranteed to be initialized correctly with the latest state from the server when this function is called on the client.</para>
     /// </summary>
-    public override void OnStartClient() { }
+    public override void OnStartClient() {}
 
     /// <summary>
     /// This is invoked on clients when the server has caused this object to be destroyed.
@@ -92,7 +96,9 @@ public class CombatManager : NetworkBehaviour
     /// Called when the local player object has been set up.
     /// <para>This happens after OnStartClient(), as it is triggered by an ownership message from the server. This is an appropriate place to activate components or functionality that should only be active for the local player, such as cameras and input.</para>
     /// </summary>
-    public override void OnStartLocalPlayer() { }
+    public override void OnStartLocalPlayer() {
+        
+    }
 
     /// <summary>
     /// Called when the local player object is being stopped.
@@ -124,7 +130,7 @@ public class CombatManager : NetworkBehaviour
             combatants[i] = combatants[r];
             combatants[r] = tmp;
         }
-
+        Debug.Log("Randomized");
     }
 
 
@@ -134,7 +140,7 @@ public class CombatManager : NetworkBehaviour
         currentCombatant = combatants[turn];
         if (currentCombatant.TryGetComponent<Player>(out Player player))
         {
-            player.enableUI(true);
+            ActivateUIForPlayer(player.gameObject.GetComponent<NetworkIdentity>().connectionToClient,player);
         }
         else if (currentCombatant.TryGetComponent<Enemy>(out Enemy enemy))
         {
@@ -144,6 +150,7 @@ public class CombatManager : NetworkBehaviour
         {
             Debug.Log("Somethings Gone Horribly Wrong");
         }
+        Debug.Log("Tried to give turn");
     }
 
     IEnumerator StartSkill1()
@@ -155,7 +162,47 @@ public class CombatManager : NetworkBehaviour
 
         int damage = Mathf.Min(player1SkillPower + player2SkillPower, 10);
         enemy.GetComponent<Enemy>().health -= damage;
+        nextTurn();
     }
 
-    
+
+    [TargetRpc] 
+    void ActivateUIForPlayer(NetworkConnectionToClient target,Player player)
+    {
+        player.enableUI(true);
+    }
+
+   public void PlayerAttack()
+    {
+        currentCombatant.GetComponent<Player>().Attack();
+    }
+
+    [TargetRpc]
+    void SetTextForPlayer(NetworkConnectionToClient target, string Text)
+    {
+        Prompt.text= Text;
+    }
+
+    public void StartSkill()
+    {
+        StartCoroutine(StartSkill1());
+
+    }
+
+    [Server]
+    public void nextTurn()
+    {
+        if (isLocalPlayer)
+        {
+            if (currentTurn == 4)
+            {
+                currentTurn = 0;
+                SetCombatOrder();
+            }
+            else
+        currentTurn+=1;
+        Debug.Log("Turn advanced");
+        }
+        
+    }
 }

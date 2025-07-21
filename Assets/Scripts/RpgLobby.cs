@@ -70,18 +70,23 @@ public class RpgLobby : NetworkRoomManager
     /// <returns>The new room-player object.</returns>
     public override GameObject OnRoomServerCreateRoomPlayer(NetworkConnectionToClient conn)
     {
-        if (roomPlayerPrefab.transform.GetChild(0).gameObject.activeSelf)
+        if (numPlayers!=0)
         {
-            roomPlayerPrefab.transform.GetChild(1).gameObject.SetActive(true);
-            roomPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+           // Debug.Log("player2");
+
+            roomPlayerPrefab.GetComponent<LobbyPlayer>().playerNumber = Players.Player2;
 
         }
-        else
-            Debug.Log("else");
-            roomPlayerPrefab.transform.GetChild(0).gameObject.SetActive(true);
+        if (numPlayers ==0)
+        {
+            //Debug.Log("player1");
+            roomPlayerPrefab.GetComponent<LobbyPlayer>().playerNumber = Players.Player1;
+        }
+            
 
 
-        Debug.Log(numPlayers);
+
+        //Debug.Log(numPlayers);
         
         return base.OnRoomServerCreateRoomPlayer(conn);
     }
@@ -95,19 +100,7 @@ public class RpgLobby : NetworkRoomManager
     /// <returns>A new GamePlayer object.</returns>
     public override GameObject OnRoomServerCreateGamePlayer(NetworkConnectionToClient conn, GameObject roomPlayer)
     {
-        if (roomPlayer.transform.GetChild(0).gameObject.activeSelf)
-        {
-            playerPrefab.transform.GetChild(0).gameObject.SetActive(true);
-            playerPrefab.transform.GetChild(1).gameObject.SetActive(false);
-            Debug.Log("player 1 loaded");
-        }
-        if (roomPlayer.transform.GetChild(1).gameObject.activeSelf)
-        {
-            playerPrefab.transform.GetChild(1).gameObject.SetActive(true);
-            playerPrefab.transform.GetChild(0).gameObject.SetActive(false);
-            Debug.Log("player 2 loaded");
-            
-        }   
+        
         return base.OnRoomServerCreateGamePlayer(conn, roomPlayer);
     }
 
@@ -132,6 +125,17 @@ public class RpgLobby : NetworkRoomManager
     /// <returns>False to not allow this player to replace the room player.</returns>
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
     {
+        if (roomPlayer.transform.GetChild(0).gameObject.activeSelf && roomPlayer.transform.GetChild(0).gameObject.activeSelf)
+        {
+           gamePlayer.GetComponent<Player>().playerNumber = Players.Player1;
+            //Debug.Log("player 1 loaded");
+        }
+        if (roomPlayer.transform.GetChild(1).gameObject.activeSelf)
+        {
+           gamePlayer.GetComponent<Player>().playerNumber = Players.Player2;
+            //Debug.Log("player 2 loaded");
+
+        }
         return base.OnRoomServerSceneLoadedForPlayer(conn, roomPlayer, gamePlayer);
     }
 
@@ -149,8 +153,8 @@ public class RpgLobby : NetworkRoomManager
     /// </summary>
     public override void OnRoomServerPlayersReady()
     {
-        playerPrefab.transform.GetChild(0).gameObject.SetActive(false);
-            playerPrefab.transform.GetChild(1).gameObject.SetActive(false);
+        roomPlayerPrefab.transform.GetChild(0).gameObject.SetActive(false);
+            roomPlayerPrefab.transform.GetChild(1).gameObject.SetActive(false);
         base.OnRoomServerPlayersReady();
     }
 

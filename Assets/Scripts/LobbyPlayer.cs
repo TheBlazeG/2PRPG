@@ -7,20 +7,11 @@ using Mirror;
 	API Reference: https://mirror-networking.com/docs/api/Mirror.NetworkBehaviour.html
 */
 
-public class Enemy : NetworkBehaviour
+public class LobbyPlayer : NetworkBehaviour
 {
-    #region Stats
 
-    [SyncVar (hook = nameof(RageBuildup))] public float health =20.0f;
-    [SyncVar] private float speed=2;
-    [SyncVar] private float damage=2;
-    
+    [SyncVar] public Players playerNumber = Players.none;
 
-    #endregion
-    
-    
-    
-    
     #region Unity Callbacks
 
     /// <summary>
@@ -38,7 +29,17 @@ public class Enemy : NetworkBehaviour
 
     void Start()
     {
-        
+        if (playerNumber == Players.Player1)
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+            transform.GetChild(1).gameObject.SetActive(false);
+        }
+        else if (playerNumber == Players.Player2) 
+        {
+            transform.GetChild(1).gameObject.SetActive(true);
+            transform.GetChild(0).gameObject.SetActive(false);
+
+        }
     }
 
     #endregion
@@ -50,9 +51,7 @@ public class Enemy : NetworkBehaviour
     /// <para>This could be triggered by NetworkServer.Listen() for objects in the scene, or by NetworkServer.Spawn() for objects that are dynamically created.</para>
     /// <para>This will be called for objects on a "host" as well as for object on a dedicated server.</para>
     /// </summary>
-    public override void OnStartServer() {
-        
-    }
+    public override void OnStartServer() { }
 
     /// <summary>
     /// Invoked on the server when the object is unspawned
@@ -100,32 +99,11 @@ public class Enemy : NetworkBehaviour
     #endregion
 
 
-    
-    void RageBuildup(float oldFloat, float newFloat)
-    {
-        if (newFloat< 7)
-        {
-       
-            speed *= 2;
-            damage *= 1.5f;
-        }
-    }
-   
+}
 
-    [Command]
-    public void Attack(List<GameObject> players)
-    {
-
-        players[Random.Range(0, players.Count)].GetComponent<Player>().health -= damage;
-        if (CombatManager.instance.currentTurn >= 2)
-        {
-            CombatManager.instance.currentTurn = 0;
-        }
-        else
-        {
-            CombatManager.instance.currentTurn++;
-            
-        }
-        //random entre 2 jugadores y hacer daño
-    }
+public enum Players
+{
+    Player1 ,
+    Player2 ,
+        none  
 }
