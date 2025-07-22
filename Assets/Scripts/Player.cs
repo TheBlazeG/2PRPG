@@ -22,7 +22,7 @@ public class Player : NetworkBehaviour
     [SyncVar] private float damage = 2;
     [SerializeField] GameObject character1;
     [SyncVar] public Players playerNumber = Players.none;
-    private bool currentTurn = false;
+    public bool currentTurn = false;
 
     #endregion
 
@@ -133,10 +133,10 @@ public class Player : NetworkBehaviour
         //ui.SetActive(uiActive);
     }
 
-    [Server]
+    [Command (requiresAuthority =false)]
     public void Attack()
     {
-        if (!isServer)
+        if (!isServer ||!currentTurn)
             return;
         
         CombatManager.instance.enemy.GetComponent<Enemy>().health -= damage;

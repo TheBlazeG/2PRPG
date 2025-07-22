@@ -141,6 +141,7 @@ public class CombatManager : NetworkBehaviour
         currentCombatant = combatants[turn];
         if (currentCombatant.TryGetComponent<Player>(out Player player))
         {
+            player.currentTurn = true;
             //ActivateUIForPlayer(player.gameObject.GetComponent<NetworkIdentity>().connectionToClient,player);
         }
         else if (currentCombatant.TryGetComponent<Enemy>(out Enemy enemy))

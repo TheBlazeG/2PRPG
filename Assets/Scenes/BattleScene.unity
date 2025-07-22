@@ -2269,7 +2269,7 @@ MonoBehaviour:
   players: []
   enemy: {fileID: 756579625}
   currentCombatant: {fileID: 0}
-  currentTurn: -1
+  currentTurn: 0
   player1SkillPower: 0
   player2SkillPower: 0
   Prompt: {fileID: 1067905014}
